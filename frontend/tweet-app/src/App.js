@@ -3,8 +3,9 @@ import './App.css';
 
 function App() {
   const [tweetContent, setTweetContent] = useState('');
-  const [tweets, setTweets] = useState(null);
+  const [tweets, setTweets] = useState([]);
   const [message, setMessage] = useState('');
+  const [editTweetId, setEditTweetId] = useState(null);
 
   useEffect(() => {
     fetchTweets();
@@ -53,14 +54,19 @@ function App() {
     }
   };
 
-  const handleEdit = async (id, updatedContent) => {
+  const handleEdit = (id, content) => {
+    setEditTweetId(id);
+    setTweetContent(content);
+  };
+
+  const handleEditSubmit = async (id) => {
     try {
       const response = await fetch(`http://localhost:8080/edit_tweet/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `tweetContent=${encodeURIComponent(updatedContent)}`,
+        body: `tweetContent=${encodeURIComponent(tweetContent)}`,
         mode: 'cors',
       });
 
@@ -68,11 +74,11 @@ function App() {
         throw new Error(`An error occurred while editing the tweet: ${response.status} ${response.statusText}`);
       }
 
-      // Update the state with the edited tweet
-      const updatedTweets = tweets.map((tweet) =>
-        tweet.id === id ? { ...tweet, content: updatedContent } : tweet
-      );
-      setTweets(updatedTweets);
+      // Fetch tweets again to update the state
+      await fetchTweets();
+
+      setEditTweetId(null);
+      setTweetContent('');
       setMessage(`Tweet with ID ${id} edited successfully`);
     } catch (error) {
       console.error('Error:', error);
@@ -118,7 +124,13 @@ function App() {
         ></textarea>
         <br />
         <br />
-        <input type="submit" value="Create Tweet" />
+        {editTweetId === null ? (
+          <input type="submit" value="Create Tweet" />
+        ) : (
+          <button type="button" onClick={() => handleEditSubmit(editTweetId)}>
+            Save Changes
+          </button>
+        )}
       </form>
 
       {message && (
@@ -129,17 +141,24 @@ function App() {
 
       <div className="tweet-list">
         <h2>Tweets</h2>
-        {tweets !== null ? (
-          tweets.map((tweet) => (
-            <div key={tweet.id} className="tweet">
+        {tweets.map((tweet) => (
+          <div key={tweet.id} className="tweet">
+            {editTweetId === tweet.id ? (
+              <textarea
+                value={tweetContent}
+                onChange={(e) => setTweetContent(e.target.value)}
+              ></textarea>
+            ) : (
               <p>{tweet.content}</p>
-              <button onClick={() => handleEdit(tweet.id, 'Updated Content')}>Edit</button>
-              <button onClick={() => handleDelete(tweet.id)}>Delete</button>
-            </div>
-          ))
-        ) : (
-          <p>Loading tweets...</p>
-        )}
+            )}
+            {editTweetId === tweet.id ? (
+              <button onClick={() => handleEditSubmit(tweet.id)}>Save Changes</button>
+            ) : (
+              <button onClick={() => handleEdit(tweet.id, tweet.content)}>Edit</button>
+            )}
+            <button onClick={() => handleDelete(tweet.id)}>Delete</button>
+          </div>
+        ))}
       </div>
     </div>
   );
