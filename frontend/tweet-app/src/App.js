@@ -13,21 +13,22 @@ function App() {
   const fetchTweets = async () => {
     try {
       const response = await fetch('http://localhost:8080/tweets');
-
+  
       if (!response.ok) {
         throw new Error(`Failed to fetch tweets: ${response.status} ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       setTweets(data);
     } catch (error) {
       console.error('Error fetching tweets:', error);
     }
   };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const response = await fetch('http://localhost:8080/create_tweet', {
         method: 'POST',
@@ -37,13 +38,14 @@ function App() {
         body: `tweetContent=${encodeURIComponent(tweetContent)}`,
         mode: 'cors',
       });
-
+  
       if (!response.ok) {
         throw new Error('An error occurred while creating the tweet.');
       }
-
-      const newTweet = await response.json();
-      setTweets([...tweets, newTweet]);
+  
+      // Fetch tweets again to update the state
+      await fetchTweets();
+  
       setTweetContent('');
       setMessage('Tweet created successfully');
     } catch (error) {
@@ -51,6 +53,7 @@ function App() {
       setMessage('An error occurred while creating the tweet.');
     }
   };
+  
 
   const handleEdit = async (id, updatedContent) => {
     // Similar to your previous code
