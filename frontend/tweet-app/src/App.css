@@ -22,44 +22,19 @@ h1 {
 }
 
 form {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
 }
 
-label {
-  font-size: 16px;
-  margin-bottom: 8px;
-  color: #333;
+.form-group {
+  margin-bottom: 20px;
 }
 
 textarea {
-  padding: 10px;
-  font-size: 14px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  resize: vertical;
 }
 
-input[type="submit"] {
-  background-color: #1da1f2;
-  color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.alert {
   font-size: 16px;
-}
-
-input[type="submit"]:hover {
-  background-color: #0c7cbf;
-}
-
-.success-message {
-  color: #008000;
-}
-
-.error-message {
-  color: #ff0000;
 }
 
 .tweet-list {
@@ -73,22 +48,38 @@ input[type="submit"]:hover {
   margin-bottom: 10px;
 }
 
+.tweet-actions {
+  margin-bottom: 10px;
+}
+
 .tweet p {
   font-size: 16px;
   margin: 5px 0;
 }
 
-.tweet button {
-  background-color: #1da1f2;
+.btn-success {
+  background-color: #28a745;
   color: #fff;
-  padding: 5px;
-  margin-right: 5px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
 }
 
-.tweet button:hover {
-  background-color: #0c7cbf;
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
 }

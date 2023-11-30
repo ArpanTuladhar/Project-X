@@ -1,5 +1,25 @@
+// app.js
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
+
+const TweetActions = ({ onLike, onComment, onEdit, onDelete }) => (
+  <div className="tweet-actions mt-2">
+    <button onClick={onLike} className="btn btn-primary mr-2">
+      Like
+    </button>
+    <button onClick={onComment} className="btn btn-secondary mr-2">
+      Comment
+    </button>
+    <button onClick={onEdit} className="btn btn-warning mr-2">
+      Edit
+    </button>
+    <button onClick={onDelete} className="btn btn-danger">
+      Delete
+    </button>
+  </div>
+);
+
 
 function App() {
   const [tweetContent, setTweetContent] = useState('');
@@ -136,24 +156,26 @@ function App() {
     <div className="App">
       <h1>Create a Tweet</h1>
       <form onSubmit={editTweetId !== null ? () => handleEditSubmit(editTweetId) : handleSubmit}>
-        <label htmlFor="tweetContent">Tweet Content:</label>
-        <br />
-        <textarea
-          id="tweetContent"
-          name="tweetContent"
-          rows="4"
-          cols="50"
-          required
-          value={tweetContent}
-          onChange={(e) => setTweetContent(e.target.value)}
-        ></textarea>
-        <br />
-        <br />
-        <input type="submit" value={editTweetId !== null ? 'Edit Tweet' : 'Create Tweet'} />
+        <div className="form-group">
+          <label htmlFor="tweetContent">Tweet Content:</label>
+          <textarea
+            className="form-control"
+            id="tweetContent"
+            name="tweetContent"
+            rows="4"
+            cols="50"
+            required
+            value={tweetContent}
+            onChange={(e) => setTweetContent(e.target.value)}
+          ></textarea>
+        </div>
+        <button type="submit" className="btn btn-primary">
+          {editTweetId !== null ? 'Edit Tweet' : 'Create Tweet'}
+        </button>
       </form>
 
       {message && (
-        <div className={message.includes('error') ? 'error-message' : 'success-message'}>
+        <div className={message.includes('error') ? 'alert alert-danger mt-3' : 'alert alert-success mt-3'}>
           {message}
         </div>
       )}
@@ -162,20 +184,16 @@ function App() {
         <h2>Tweets</h2>
         {tweets !== null && tweets.length > 0 ? (
           tweets.map((tweet) => (
-            <div key={tweet.id} className="tweet">
-              {editTweetId === tweet.id ? (
-                <button onClick={() => handleEditSubmit(tweet.id)}>Save Edit</button>
-              ) : (
-                <>
-                  <p>{tweet.content}</p>
-                  <p>Likes: {tweet.likesCount}</p>
-                  <p>Comments: {tweet.commentsCount}</p>
-                  <button onClick={() => handleEdit(tweet.id, tweet.content)}>Edit</button>
-                  <button onClick={() => handleDelete(tweet.id)}>Delete</button>
-                  <button onClick={() => handleLike(tweet.id)}>Like</button>
-                  <button onClick={() => handleComment(tweet.id)}>Comment</button>
-                </>
-              )}
+            <div key={tweet.id} className="tweet border p-3 mb-3 rounded">
+              <p>{tweet.content}</p>
+              <p>Likes: {tweet.likesCount}</p>
+              <p>Comments: {tweet.commentsCount}</p>
+              <TweetActions
+                onLike={() => handleLike(tweet.id)}
+                onComment={() => handleComment(tweet.id)}
+                onEdit={() => handleEdit(tweet.id, tweet.content)}
+                onDelete={() => handleDelete(tweet.id)}
+              />
             </div>
           ))
         ) : (
